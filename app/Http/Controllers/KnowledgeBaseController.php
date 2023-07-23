@@ -16,6 +16,12 @@ class KnowledgeBaseController extends Controller
         $this->knowledgeBaseService = $knowledgeBaseService;
     }
 
+    public function dashboard()
+    {
+        $knowledgeCount = KnowledgeBase::count();
+        return view('dashboard', ['knowledgeCount' => $knowledgeCount]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -44,12 +50,7 @@ class KnowledgeBaseController extends Controller
             'answer' => 'required',
         ]);
 
-
-        $count = KnowledgeBase::latest()->first()->id ?? 1;
-
         if ($result['status']) {
-            $dialogFlowSL = new DialogFlowSL();
-            $dialogFlowSL->intent_create('chatislam', 'knowledge-' . $count, [$request->question], [$request->answer]);
             return redirect('knowledge-base')->with('success', $result['payload']);
         } else {
             return redirect()->back()->with('errors', $result['payload']);
@@ -91,9 +92,15 @@ class KnowledgeBaseController extends Controller
      */
     public function destroy(KnowledgeBase $knowledgeBase)
     {
+        $intentId = $knowledgeBase->intent_id ?? null;
         $result = $this->knowledgeBaseService->destroy($knowledgeBase->id);
 
         if ($result['status']) {
+            if ($intentId) {
+                $dialogFlowSL = new DialogFlowSL();
+                $dialogFlowSL->intent_delete('chatislam', $intentId);
+            }
+
             return redirect('knowledge-base')->with('success', $result['payload']);
         } else {
             return redirect()->back()->with('errors', 'Something went wrong.');

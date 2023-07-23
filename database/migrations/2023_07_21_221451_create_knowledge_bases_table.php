@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('question');
             $table->text('answer');
             $table->string('reference')->nullable();
+            $table->string('intent_id')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->timestamps();
         });

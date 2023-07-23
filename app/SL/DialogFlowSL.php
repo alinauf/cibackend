@@ -130,7 +130,29 @@ class DialogFlowSL
 
         // create intent
         $response = $intentsClient->createIntent($parent, $intent);
-        printf('Intent created: %s' . PHP_EOL, $response->getName());
+//        printf('Intent created: %s' . PHP_EOL, $response->getName());
+
+        $responseResult = $response->getName();
+
+
+        //projects/chatislam/agent/intents/321b0351-9101-4709-b3fc-21eb75204477
+        // split by '/' and get last
+
+        $responseResult = explode('/', $responseResult);
+        $responseResult = end($responseResult);
+
+        $intentsClient->close();
+        return $responseResult;
+    }
+
+
+    function intent_delete($projectId, $intentId)
+    {
+        $intentsClient = new IntentsClient();
+        $intentName = $intentsClient->intentName($projectId, $intentId);
+
+        $intentsClient->deleteIntent($intentName);
+        printf('Intent deleted: %s' . PHP_EOL, $intentName);
 
         $intentsClient->close();
     }

@@ -48,19 +48,20 @@ formValidationStatus:@entangle('formValidationStatus'),
                 </div>
 
                 {{-- Answer--}}
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-6">
                     <label for="answer" class="block text-sm font-medium text-gray-700"
                     >
                         Answer <span class="text-red-900">*</span>
                     </label>
                     <div class="mt-1">
-                        <input type="text" name="answer"
-                               wire:model="answer"
-                               id="answer"
-                               class="
+                         <textarea name="answer"
+                                   wire:model="answer"
+                                   id="answer" cols="5" rows="3" class="
                             @error('answer') border border-red-500 @enderror
-                                   shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm
-                                   border-gray-300 rounded-md">
+                        shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm
+                        border-gray-300 rounded-md">
+                </textarea>
+
                     </div>
 
                     @error('answer')

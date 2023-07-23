@@ -30,6 +30,12 @@ class KnowledgeBaseSL extends SL
                 'answer' => $data['answer'],
                 'reference' => $data['reference'] ?? null,
             ]);
+
+            $dialogflowSL = new DialogflowSL();
+            $intentId = $dialogflowSL->intent_create('chatislam', 'knowledge-' . $knowledgeBase->id, [$data['question']], [$data['answer']]);
+            $knowledgeBase->intent_id = $intentId;
+            $result = $knowledgeBase->save();
+
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
@@ -37,7 +43,7 @@ class KnowledgeBaseSL extends SL
 
         DB::commit();
 
-        if ($knowledgeBase) {
+        if ($knowledgeBase && $result) {
             return [
                 'status' => true,
                 'payload' => 'The question and answer has been successfully created',
@@ -60,10 +66,26 @@ class KnowledgeBaseSL extends SL
         $knowledgeBase = KnowledgeBase::where('id', $knowledgeBaseId)->first();
 
         try {
-            $knowledgeBase->question = $data['question'] ?? $knowledgeBase->question;
-            $knowledgeBase->answer = $data['answer'] ?? $knowledgeBase->answer;
+
+            $question = $data['question'] ?? $knowledgeBase->question;
+            $answer = $data['answer'] ?? $knowledgeBase->answer;
+
+
+            $knowledgeBase->question = $question;
+            $knowledgeBase->answer = $answer;
             $knowledgeBase->reference = $data['reference'] ?? $knowledgeBase->reference;
             $knowledgeBaseSave = $knowledgeBase->save();
+
+
+            $dialogFlowSL = new DialogFlowSL();
+
+            if ($knowledgeBase->intent_id) {
+                $dialogFlowSL->intent_delete('chatislam',  $knowledgeBase->intent_id);
+            }
+
+            $dialogFlowSL->intent_create('chatislam', 'knowledge-' . $knowledgeBase->id, [$question], [$answer]);
+
+
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
@@ -83,6 +105,7 @@ class KnowledgeBaseSL extends SL
             ];
         }
     }
+
 
 
 }
