@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Hadith;
 use App\SL\DialogFlowSL;
 use Google\Cloud\Dialogflow\V2\QueryInput;
 use Google\Cloud\Dialogflow\V2\SessionsClient;

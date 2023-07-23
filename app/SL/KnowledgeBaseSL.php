@@ -31,7 +31,7 @@ class KnowledgeBaseSL extends SL
                 'reference' => $data['reference'] ?? null,
             ]);
 
-            $dialogflowSL = new DialogflowSL();
+            $dialogflowSL = new DialogFlowSL();
             $intentId = $dialogflowSL->intent_create('chatislam', 'knowledge-' . $knowledgeBase->id, [$data['question']], [$data['answer']]);
             $knowledgeBase->intent_id = $intentId;
             $result = $knowledgeBase->save();
