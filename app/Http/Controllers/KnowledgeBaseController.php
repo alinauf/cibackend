@@ -19,10 +19,6 @@ class KnowledgeBaseController extends Controller
     public function dashboard()
     {
         $knowledgeCount = KnowledgeBase::count();
-
-
-        // return knowledgebase but only fields question and answer
-        return KnowledgeBase::select('question', 'answer')->get();
         return view('dashboard', ['knowledgeCount' => $knowledgeCount]);
     }
 
