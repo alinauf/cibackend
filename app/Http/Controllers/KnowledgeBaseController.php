@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class KnowledgeBaseController extends Controller
 {
-    private $knowledgeBaseService;
+    private KnowledgeBaseSL $knowledgeBaseService;
 
     public function __construct(KnowledgeBaseSL $knowledgeBaseService)
     {
@@ -89,7 +89,7 @@ class KnowledgeBaseController extends Controller
         $result = $this->knowledgeBaseService->destroy($knowledgeBase->id);
 
         if ($result['status']) {
-            return redirect('vendor')->with('success', $result['payload']);
+            return redirect('knowledge-base')->with('success', $result['payload']);
         } else {
             return redirect()->back()->with('errors', 'Something went wrong.');
         }
