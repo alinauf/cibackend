@@ -2,6 +2,10 @@
 
 namespace App\SL;
 
+
+use Google\ApiCore\ApiException;
+use Google\ApiCore\ValidationException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 use Google\Cloud\Dialogflow\V2\Intent;
@@ -22,8 +26,9 @@ class DialogFlowSL
 
     public function __construct($sessionId = null)
     {
-        $test = array('credentials' =>Storage::disk('local')->get('client-secret.json'));
-        $this->sessionsClient = new SessionsClient($test);
+        $this->sessionsClient = new SessionsClient([
+            'credentials' => storage_path('app') . '/client-secret.json'
+        ]);
         $this->session = $this->sessionsClient->sessionName('chatislam', $sessionId ?? uniqid());
     }
 
@@ -49,7 +54,7 @@ class DialogFlowSL
         $fulfilmentText = $queryResult->getFulfillmentText();
         $this->sessionsClient->close();
 
-       $this->intent_list('chatislam');
+        $this->intent_list('chatislam');
 
 
         return [
@@ -63,10 +68,16 @@ class DialogFlowSL
     }
 
 
+    /**
+     * @throws ApiException
+     * @throws ValidationException
+     */
     function intent_list($projectId)
     {
         // get intents
-        $intentsClient = new IntentsClient();
+        $intentsClient = new IntentsClient([
+            'credentials' =>  storage_path('app').'/client-secret.json'
+        ]);
         $parent = $intentsClient->agentName($projectId);
         $intents = $intentsClient->listIntents($parent);
 
@@ -96,10 +107,16 @@ class DialogFlowSL
     }
 
 
+    /**
+     * @throws ApiException
+     * @throws ValidationException
+     */
     public function intent_create($projectId, $displayName, $trainingPhraseParts = [],
-                           $messageTexts = [])
+                                  $messageTexts = [])
     {
-        $intentsClient = new IntentsClient();
+        $intentsClient = new IntentsClient([
+            'credentials' => storage_path('app') . '/client-secret.json'
+        ]);
 
         // prepare parent
         $parent = $intentsClient->agentName($projectId);
@@ -146,9 +163,16 @@ class DialogFlowSL
     }
 
 
+    /**
+     * @throws ValidationException
+     * @throws ApiException
+     */
     function intent_delete($projectId, $intentId)
     {
-        $intentsClient = new IntentsClient();
+        $intentsClient = new IntentsClient([
+            'credentials' => storage_path('app') . '/client-secret.json'
+        ]);
+
         $intentName = $intentsClient->intentName($projectId, $intentId);
 
         $intentsClient->deleteIntent($intentName);
