@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KnowledgeBase;
+use App\SL\DialogFlowSL;
 use App\SL\KnowledgeBaseSL;
 use Illuminate\Http\Request;
 
@@ -44,7 +45,11 @@ class KnowledgeBaseController extends Controller
         ]);
 
 
+        $count = KnowledgeBase::latest()->first()->id ?? 1;
+
         if ($result['status']) {
+            $dialogFlowSL = new DialogFlowSL();
+            $dialogFlowSL->intent_create('chatislam', 'knowledge-' . $count, [$request->question], [$request->answer]);
             return redirect('knowledge-base')->with('success', $result['payload']);
         } else {
             return redirect()->back()->with('errors', $result['payload']);

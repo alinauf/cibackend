@@ -28,7 +28,7 @@ class KnowledgeBaseSL extends SL
             $knowledgeBase = KnowledgeBase::firstOrCreate([
                 'question' => $data['question'],
                 'answer' => $data['answer'],
-                'reference' => $data['reference'],
+                'reference' => $data['reference'] ?? null,
             ]);
         } catch (\Exception $e) {
             DB::rollback();

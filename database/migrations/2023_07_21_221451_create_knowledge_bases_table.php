@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('knowledge_bases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
             $table->string('question');
             $table->text('answer');
             $table->string('reference')->nullable();
