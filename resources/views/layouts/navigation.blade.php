@@ -73,6 +73,10 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('knowledge-base.index')" :active="request()->routeIs('knowledge-base.index')">
+                {{ __('Knowledge Base') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
